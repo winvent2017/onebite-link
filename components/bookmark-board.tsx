@@ -22,7 +22,7 @@ export function BookmarkBoard({ folders, links }: BookmarkBoardProps) {
         totalCount={links.length}
       />
       <main className="flex-1 px-8 py-8">
-        <h2 className="mb-6 text-lg font-bold text-slate-100">전체 링크</h2>
+        <h2 className="mb-6 text-lg font-bold text-[var(--text)]">전체 링크</h2>
         <LinkGrid links={links} />
       </main>
     </div>

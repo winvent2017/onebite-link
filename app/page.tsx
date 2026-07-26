@@ -4,7 +4,7 @@ import { folders, links } from "@/lib/mock-data";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col bg-slate-900 text-slate-100">
+    <div className="flex min-h-screen flex-col bg-[var(--background)] text-[var(--text)]">
       <Header />
       <BookmarkBoard folders={folders} links={links} />
     </div>

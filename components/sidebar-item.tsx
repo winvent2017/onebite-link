@@ -13,15 +13,15 @@ export function SidebarItem({ label, count, active, icon, onClick }: SidebarItem
     <button
       type="button"
       onClick={onClick}
-      className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition ${
+      className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
         active
-          ? "bg-lime-400 text-slate-900"
-          : "text-slate-400 hover:bg-slate-800 hover:text-slate-100"
+          ? "bg-[var(--accent)] text-white"
+          : "text-[var(--text-sub)] hover:bg-[var(--accent-soft)] hover:text-[var(--accent)]"
       }`}
     >
-      <span className={active ? "text-slate-900" : "text-slate-400"}>{icon}</span>
+      <span className={active ? "text-white" : "text-[var(--text-sub)]"}>{icon}</span>
       <span className="truncate">{label}</span>
-      <span className={`ml-auto text-xs ${active ? "text-slate-800" : "text-slate-500"}`}>
+      <span className={`ml-auto text-xs ${active ? "text-white/80" : "text-[var(--text-sub)]"}`}>
         {count}
       </span>
     </button>

@@ -31,7 +31,7 @@ export function FolderBoard({
         totalCount={totalCount}
       />
       <main className="flex-1 px-8 py-8">
-        <h2 className="mb-6 text-lg font-bold text-slate-100">{folderName}</h2>
+        <h2 className="mb-6 text-lg font-bold text-[var(--text)]">{folderName}</h2>
         <LinkGrid links={links} />
       </main>
     </div>

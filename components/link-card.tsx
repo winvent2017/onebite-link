@@ -18,19 +18,19 @@ export function LinkCard({ link }: { link: LinkItem }) {
       href={link.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex flex-col gap-3 rounded-xl border border-slate-700 bg-slate-800 p-4 transition hover:-translate-y-0.5 hover:border-lime-400/60 hover:shadow-[0_0_24px_-4px_rgba(163,230,53,0.35)]"
+      className="group flex flex-col gap-3 rounded-2xl bg-[var(--card)] p-4 shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.12)]"
     >
       <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-lime-400/10 text-base font-bold text-lime-400">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--accent-soft)] text-base font-bold text-[var(--accent)]">
           {initial}
         </div>
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-slate-100">{link.title}</p>
-          <p className="truncate text-xs text-slate-400">{hostname}</p>
+          <p className="truncate text-sm font-semibold text-[var(--text)]">{link.title}</p>
+          <p className="truncate text-xs text-[var(--text-sub)]">{hostname}</p>
         </div>
-        <ExternalLinkIcon className="ml-auto h-4 w-4 shrink-0 text-slate-500 transition group-hover:text-lime-400" />
+        <ExternalLinkIcon className="ml-auto h-4 w-4 shrink-0 text-[var(--text-sub)] transition group-hover:text-[var(--accent)]" />
       </div>
-      <p className="line-clamp-2 text-sm text-slate-300">{link.description}</p>
+      <p className="line-clamp-2 text-sm text-[var(--text-sub)]">{link.description}</p>
     </a>
   );
 }

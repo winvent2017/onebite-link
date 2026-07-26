@@ -23,10 +23,10 @@ export function NewLinkForm({ folders }: NewLinkFormProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="mx-auto flex w-full max-w-xl flex-col gap-5 rounded-xl border border-slate-700 bg-slate-800 p-6"
+      className="mx-auto flex w-full max-w-xl flex-col gap-5 rounded-2xl bg-[var(--card)] p-6 shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
     >
       <div className="flex flex-col gap-2">
-        <label htmlFor="url" className="text-sm font-medium text-slate-300">
+        <label htmlFor="url" className="text-sm font-medium text-[var(--text)]">
           링크 주소
         </label>
         <input
@@ -36,12 +36,12 @@ export function NewLinkForm({ folders }: NewLinkFormProps) {
           value={url}
           onChange={(event) => setUrl(event.target.value)}
           placeholder="https://example.com"
-          className="rounded-lg border border-slate-600 bg-slate-900 px-4 py-2.5 text-sm text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-lime-400"
+          className="rounded-xl bg-[var(--background)] px-4 py-3 text-sm text-[var(--text)] outline-none transition placeholder:text-[var(--placeholder)] focus:bg-[var(--card)] focus:shadow-[0_0_0_2px_var(--accent)]"
         />
       </div>
 
       <div className="flex flex-col gap-2">
-        <label htmlFor="folder" className="text-sm font-medium text-slate-300">
+        <label htmlFor="folder" className="text-sm font-medium text-[var(--text)]">
           폴더
         </label>
         <div className="relative">
@@ -49,7 +49,7 @@ export function NewLinkForm({ folders }: NewLinkFormProps) {
             id="folder"
             value={folderId}
             onChange={(event) => setFolderId(event.target.value)}
-            className="w-full appearance-none rounded-lg border border-slate-600 bg-slate-900 px-4 py-2.5 text-sm text-slate-100 outline-none transition focus:border-lime-400"
+            className="w-full appearance-none rounded-xl bg-[var(--background)] px-4 py-3 text-sm text-[var(--text)] outline-none transition focus:bg-[var(--card)] focus:shadow-[0_0_0_2px_var(--accent)]"
           >
             <option value="">폴더 선택 안 함</option>
             {folders.map((folder) => (
@@ -58,14 +58,18 @@ export function NewLinkForm({ folders }: NewLinkFormProps) {
               </option>
             ))}
           </select>
-          <ChevronDownIcon className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <ChevronDownIcon className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-[var(--text-sub)]" />
         </div>
       </div>
 
       <button
         type="submit"
         disabled={!url.trim()}
-        className="mt-2 rounded-full bg-lime-400 px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-lime-300 active:scale-95 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400 disabled:active:scale-100"
+        className={`mt-2 rounded-xl px-4 py-3 text-sm font-bold transition active:scale-[0.98] ${
+          url.trim()
+            ? "bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)]"
+            : "cursor-not-allowed bg-[var(--disabled-bg)] text-[var(--disabled-text)] active:scale-100"
+        }`}
       >
         저장
       </button>

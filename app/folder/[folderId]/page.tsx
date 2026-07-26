@@ -14,7 +14,7 @@ export default async function FolderPage(props: PageProps<"/folder/[folderId]">)
   const folderLinks = links.filter((link) => link.folderId === folderId);
 
   return (
-    <div className="flex min-h-screen flex-col bg-slate-900 text-slate-100">
+    <div className="flex min-h-screen flex-col bg-[var(--background)] text-[var(--text)]">
       <Header />
       <FolderBoard
         folders={folders}

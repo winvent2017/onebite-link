@@ -13,7 +13,7 @@ type SidebarProps = {
 
 export function Sidebar({ folders, selectedId, onSelect, totalCount }: SidebarProps) {
   return (
-    <aside className="w-56 shrink-0 border-r border-slate-700 bg-slate-900 px-3 py-6">
+    <aside className="w-56 shrink-0 px-3 py-6">
       <nav className="flex flex-col gap-1">
         <SidebarItem
           label="ALL"
@@ -24,7 +24,7 @@ export function Sidebar({ folders, selectedId, onSelect, totalCount }: SidebarPr
         />
       </nav>
 
-      <p className="mt-6 mb-2 px-3 text-xs font-semibold tracking-wider text-slate-500 uppercase">
+      <p className="mt-6 mb-2 px-3 text-xs font-semibold tracking-wider text-[var(--text-sub)] uppercase">
         폴더
       </p>
       <nav className="flex flex-col gap-1">
