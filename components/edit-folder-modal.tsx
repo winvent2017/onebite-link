@@ -1,0 +1,76 @@
+"use client";
+
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useFolders } from "@/lib/folders-context";
+import { Modal } from "./modal";
+
+type EditFolderModalProps = {
+  folderId: string;
+  initialName: string;
+  onClose: () => void;
+};
+
+export function EditFolderModal({ folderId, initialName, onClose }: EditFolderModalProps) {
+  const { renameFolder } = useFolders();
+  const [name, setName] = useState(initialName);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+    inputRef.current?.select();
+  }, []);
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    renameFolder(folderId, trimmed);
+    onClose();
+  }
+
+  return (
+    <Modal onClose={onClose}>
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-5 rounded-2xl bg-[var(--card)] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.16)]"
+      >
+        <div className="flex flex-col gap-2">
+          <label htmlFor="folder-name-edit" className="text-sm font-medium text-[var(--text)]">
+            폴더 이름 수정
+          </label>
+          <input
+            ref={inputRef}
+            id="folder-name-edit"
+            type="text"
+            required
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            placeholder="폴더 이름을 입력하세요"
+            className="rounded-xl bg-[var(--background)] px-4 py-3 text-sm text-[var(--text)] outline-none transition placeholder:text-[var(--placeholder)] focus:bg-[var(--card)] focus:shadow-[0_0_0_2px_var(--accent)]"
+          />
+        </div>
+
+        <div className="flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-xl px-4 py-2.5 text-sm font-semibold text-[var(--text-sub)] transition hover:bg-[var(--background)]"
+          >
+            취소
+          </button>
+          <button
+            type="submit"
+            disabled={!name.trim()}
+            className={`rounded-xl px-4 py-2.5 text-sm font-bold transition active:scale-[0.98] ${
+              name.trim()
+                ? "bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)]"
+                : "cursor-not-allowed bg-[var(--disabled-bg)] text-[var(--disabled-text)] active:scale-100"
+            }`}
+          >
+            저장
+          </button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
