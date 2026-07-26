@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { useFolders } from "@/lib/folders-context";
 import { SidebarItem } from "./sidebar-item";
 import { GridIcon, FolderIcon } from "./icons";
+import { DeleteFolderModal } from "./delete-folder-modal";
 
 type SidebarProps = {
   selectedId: string | null;
@@ -12,6 +14,7 @@ type SidebarProps = {
 
 export function Sidebar({ selectedId, onSelect, totalCount }: SidebarProps) {
   const { folders } = useFolders();
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
 
   return (
     <aside className="w-56 shrink-0 px-3 py-6">
@@ -37,9 +40,18 @@ export function Sidebar({ selectedId, onSelect, totalCount }: SidebarProps) {
             active={selectedId === folder.id}
             icon={<FolderIcon className="h-4 w-4" />}
             onClick={() => onSelect(folder.id)}
+            onDelete={() => setDeleteTarget({ id: folder.id, name: folder.name })}
           />
         ))}
       </nav>
+
+      {deleteTarget && (
+        <DeleteFolderModal
+          folderId={deleteTarget.id}
+          folderName={deleteTarget.name}
+          onClose={() => setDeleteTarget(null)}
+        />
+      )}
     </aside>
   );
 }

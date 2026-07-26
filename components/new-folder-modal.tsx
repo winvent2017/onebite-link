@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useFolders } from "@/lib/folders-context";
+import { Modal } from "./modal";
 
 type NewFolderModalProps = {
   onClose: () => void;
@@ -16,14 +17,6 @@ export function NewFolderModal({ onClose }: NewFolderModalProps) {
     inputRef.current?.focus();
   }, []);
 
-  useEffect(() => {
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") onClose();
-    }
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onClose]);
-
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const trimmed = name.trim();
@@ -33,11 +26,10 @@ export function NewFolderModal({ onClose }: NewFolderModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4" onClick={onClose}>
+    <Modal onClose={onClose}>
       <form
         onSubmit={handleSubmit}
-        onClick={(event) => event.stopPropagation()}
-        className="flex w-full max-w-sm flex-col gap-5 rounded-2xl bg-[var(--card)] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.16)]"
+        className="flex flex-col gap-5 rounded-2xl bg-[var(--card)] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.16)]"
       >
         <div className="flex flex-col gap-2">
           <label htmlFor="folder-name" className="text-sm font-medium text-[var(--text)]">
@@ -76,6 +68,6 @@ export function NewFolderModal({ onClose }: NewFolderModalProps) {
           </button>
         </div>
       </form>
-    </div>
+    </Modal>
   );
 }
