@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PlusIcon } from "./icons";
+import { NewFolderButton } from "./new-folder-button";
 
 export function Header() {
   return (
@@ -11,12 +12,15 @@ export function Header() {
         </h1>
       </div>
 
-      <Link
-        href="/new"
-        className="flex items-center gap-1.5 rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-bold text-white transition hover:bg-[var(--accent-hover)] active:scale-[0.98]"
-      >
-        <PlusIcon className="h-4 w-4" />새 링크
-      </Link>
+      <div className="flex items-center gap-2">
+        <NewFolderButton />
+        <Link
+          href="/new"
+          className="flex items-center gap-1.5 rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-bold text-white transition hover:bg-[var(--accent-hover)] active:scale-[0.98]"
+        >
+          <PlusIcon className="h-4 w-4" />새 링크
+        </Link>
+      </div>
     </header>
   );
 }

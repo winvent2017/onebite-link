@@ -1,38 +1,37 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import type { Folder, LinkItem } from "@/lib/types";
+import { links } from "@/lib/mock-data";
+import { useFolders } from "@/lib/folders-context";
 import { Sidebar } from "./sidebar";
 import { LinkGrid } from "./link-grid";
 
 type FolderBoardProps = {
-  folders: Folder[];
-  links: LinkItem[];
-  totalCount: number;
   folderId: string;
-  folderName: string;
 };
 
-export function FolderBoard({
-  folders,
-  links,
-  totalCount,
-  folderId,
-  folderName,
-}: FolderBoardProps) {
+export function FolderBoard({ folderId }: FolderBoardProps) {
   const router = useRouter();
+  const { folders } = useFolders();
+  const folder = folders.find((item) => item.id === folderId);
+  const folderLinks = links.filter((link) => link.folderId === folderId);
 
   return (
     <div className="flex flex-1">
       <Sidebar
-        folders={folders}
         selectedId={folderId}
         onSelect={(id) => router.push(id ? `/folder/${id}` : "/")}
-        totalCount={totalCount}
+        totalCount={links.length}
       />
       <main className="flex-1 px-8 py-8">
-        <h2 className="mb-6 text-lg font-bold text-[var(--text)]">{folderName}</h2>
-        <LinkGrid links={links} />
+        {folder ? (
+          <>
+            <h2 className="mb-6 text-lg font-bold text-[var(--text)]">{folder.name}</h2>
+            <LinkGrid links={folderLinks} />
+          </>
+        ) : (
+          <p className="text-sm text-[var(--text-sub)]">폴더를 찾을 수 없습니다.</p>
+        )}
       </main>
     </div>
   );

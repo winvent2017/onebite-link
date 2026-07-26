@@ -1,22 +1,20 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import type { Folder, LinkItem } from "@/lib/types";
+import type { LinkItem } from "@/lib/types";
 import { Sidebar } from "./sidebar";
 import { LinkGrid } from "./link-grid";
 
 type BookmarkBoardProps = {
-  folders: Folder[];
   links: LinkItem[];
 };
 
-export function BookmarkBoard({ folders, links }: BookmarkBoardProps) {
+export function BookmarkBoard({ links }: BookmarkBoardProps) {
   const router = useRouter();
 
   return (
     <div className="flex flex-1">
       <Sidebar
-        folders={folders}
         selectedId={null}
         onSelect={(id) => id && router.push(`/folder/${id}`)}
         totalCount={links.length}

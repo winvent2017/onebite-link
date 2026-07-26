@@ -1,17 +1,18 @@
 "use client";
 
-import type { Folder } from "@/lib/types";
+import { useFolders } from "@/lib/folders-context";
 import { SidebarItem } from "./sidebar-item";
 import { GridIcon, FolderIcon } from "./icons";
 
 type SidebarProps = {
-  folders: Folder[];
   selectedId: string | null;
   onSelect: (id: string | null) => void;
   totalCount: number;
 };
 
-export function Sidebar({ folders, selectedId, onSelect, totalCount }: SidebarProps) {
+export function Sidebar({ selectedId, onSelect, totalCount }: SidebarProps) {
+  const { folders } = useFolders();
+
   return (
     <aside className="w-56 shrink-0 px-3 py-6">
       <nav className="flex flex-col gap-1">

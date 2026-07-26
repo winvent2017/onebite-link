@@ -2,15 +2,12 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import type { Folder } from "@/lib/types";
+import { useFolders } from "@/lib/folders-context";
 import { ChevronDownIcon } from "./icons";
 
-type NewLinkFormProps = {
-  folders: Folder[];
-};
-
-export function NewLinkForm({ folders }: NewLinkFormProps) {
+export function NewLinkForm() {
   const router = useRouter();
+  const { folders } = useFolders();
   const [url, setUrl] = useState("");
   const [folderId, setFolderId] = useState("");
 
