@@ -1,8 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { links } from "@/lib/mock-data";
 import { useFolders } from "@/lib/folders-context";
+import { useLinks } from "@/lib/links-context";
 import { Sidebar } from "./sidebar";
 import { LinkGrid } from "./link-grid";
 
@@ -13,6 +13,7 @@ type FolderBoardProps = {
 export function FolderBoard({ folderId }: FolderBoardProps) {
   const router = useRouter();
   const { folders } = useFolders();
+  const { links } = useLinks();
   const folder = folders.find((item) => item.id === folderId);
   const folderLinks = links.filter((link) => link.folderId === folderId);
 

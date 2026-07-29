@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useFolders } from "@/lib/folders-context";
+import { useLinks } from "@/lib/links-context";
 import { SidebarItem } from "./sidebar-item";
 import { GridIcon, FolderIcon } from "./icons";
 import { DeleteFolderModal } from "./delete-folder-modal";
@@ -15,6 +16,7 @@ type SidebarProps = {
 
 export function Sidebar({ selectedId, onSelect, totalCount }: SidebarProps) {
   const { folders } = useFolders();
+  const { links } = useLinks();
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
   const [editTarget, setEditTarget] = useState<{ id: string; name: string } | null>(null);
 
@@ -38,7 +40,7 @@ export function Sidebar({ selectedId, onSelect, totalCount }: SidebarProps) {
           <SidebarItem
             key={folder.id}
             label={folder.name}
-            count={folder.count}
+            count={links.filter((link) => link.folderId === folder.id).length}
             active={selectedId === folder.id}
             icon={<FolderIcon className="h-4 w-4" />}
             onClick={() => onSelect(folder.id)}

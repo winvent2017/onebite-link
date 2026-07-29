@@ -3,18 +3,47 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useFolders } from "@/lib/folders-context";
+import { useLinks } from "@/lib/links-context";
 import { ChevronDownIcon } from "./icons";
 
 export function NewLinkForm() {
   const router = useRouter();
   const { folders } = useFolders();
+  const { addLink } = useLinks();
   const [url, setUrl] = useState("");
   const [folderId, setFolderId] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!url.trim()) return;
-    router.push("/");
+    const trimmedUrl = url.trim();
+    if (!trimmedUrl || isLoading) return;
+
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch(`/api/og?url=${encodeURIComponent(trimmedUrl)}`);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error ?? "오픈 그래프 정보를 가져오지 못했습니다.");
+      }
+
+      addLink({
+        url: data.url,
+        title: data.title,
+        description: data.description,
+        thumbnail: data.thumbnail,
+        folderId,
+      });
+
+      router.push(folderId ? `/folder/${folderId}` : "/");
+    } catch {
+      setError("링크 정보를 가져오지 못했습니다. 주소를 확인하고 다시 시도해 주세요.");
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -30,11 +59,13 @@ export function NewLinkForm() {
           id="url"
           type="url"
           required
+          disabled={isLoading}
           value={url}
           onChange={(event) => setUrl(event.target.value)}
           placeholder="https://example.com"
-          className="rounded-xl bg-[var(--background)] px-4 py-3 text-sm text-[var(--text)] outline-none transition placeholder:text-[var(--placeholder)] focus:bg-[var(--card)] focus:shadow-[0_0_0_2px_var(--accent)]"
+          className="rounded-xl bg-[var(--background)] px-4 py-3 text-sm text-[var(--text)] outline-none transition placeholder:text-[var(--placeholder)] focus:bg-[var(--card)] focus:shadow-[0_0_0_2px_var(--accent)] disabled:opacity-60"
         />
+        {error && <p className="text-xs text-[var(--error)]">{error}</p>}
       </div>
 
       <div className="flex flex-col gap-2">
@@ -45,8 +76,9 @@ export function NewLinkForm() {
           <select
             id="folder"
             value={folderId}
+            disabled={isLoading}
             onChange={(event) => setFolderId(event.target.value)}
-            className="w-full appearance-none rounded-xl bg-[var(--background)] px-4 py-3 text-sm text-[var(--text)] outline-none transition focus:bg-[var(--card)] focus:shadow-[0_0_0_2px_var(--accent)]"
+            className="w-full appearance-none rounded-xl bg-[var(--background)] px-4 py-3 text-sm text-[var(--text)] outline-none transition focus:bg-[var(--card)] focus:shadow-[0_0_0_2px_var(--accent)] disabled:opacity-60"
           >
             <option value="">폴더 선택 안 함</option>
             {folders.map((folder) => (
@@ -61,14 +93,14 @@ export function NewLinkForm() {
 
       <button
         type="submit"
-        disabled={!url.trim()}
+        disabled={!url.trim() || isLoading}
         className={`mt-2 rounded-xl px-4 py-3 text-sm font-bold transition active:scale-[0.98] ${
-          url.trim()
+          url.trim() && !isLoading
             ? "bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)]"
             : "cursor-not-allowed bg-[var(--disabled-bg)] text-[var(--disabled-text)] active:scale-100"
         }`}
       >
-        저장
+        {isLoading ? "확인 중..." : "확인"}
       </button>
     </form>
   );

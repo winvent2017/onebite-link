@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 
 type ModalProps = {
   onClose: () => void;
@@ -16,7 +17,7 @@ export function Modal({ onClose, children }: ModalProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
       onClick={onClose}
@@ -24,6 +25,7 @@ export function Modal({ onClose, children }: ModalProps) {
       <div className="w-full max-w-sm" onClick={(event) => event.stopPropagation()}>
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

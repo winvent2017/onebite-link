@@ -1,16 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import type { LinkItem } from "@/lib/types";
+import { useLinks } from "@/lib/links-context";
 import { Sidebar } from "./sidebar";
 import { LinkGrid } from "./link-grid";
 
-type BookmarkBoardProps = {
-  links: LinkItem[];
-};
-
-export function BookmarkBoard({ links }: BookmarkBoardProps) {
+export function BookmarkBoard() {
   const router = useRouter();
+  const { links } = useLinks();
 
   return (
     <div className="flex flex-1">

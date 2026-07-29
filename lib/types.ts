@@ -1,7 +1,6 @@
 export type Folder = {
   id: string;
   name: string;
-  count: number;
 };
 
 export type LinkItem = {
@@ -9,6 +8,7 @@ export type LinkItem = {
   title: string;
   url: string;
   description: string;
+  thumbnail: string;
   folderId: string;
   createdAt: string;
 };
