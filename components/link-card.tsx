@@ -3,7 +3,8 @@
 import { useState } from "react";
 import type { LinkItem } from "@/lib/types";
 import { DeleteLinkModal } from "./delete-link-modal";
-import { ExternalLinkIcon, TrashIcon } from "./icons";
+import { EditLinkModal } from "./edit-link-modal";
+import { ExternalLinkIcon, PencilIcon, TrashIcon } from "./icons";
 
 function getHostname(url: string) {
   try {
@@ -17,6 +18,7 @@ export function LinkCard({ link }: { link: LinkItem }) {
   const hostname = getHostname(link.url);
   const initial = hostname.charAt(0).toUpperCase();
   const [thumbnailFailed, setThumbnailFailed] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const showThumbnail = Boolean(link.thumbnail) && !thumbnailFailed;
 
@@ -54,14 +56,26 @@ export function LinkCard({ link }: { link: LinkItem }) {
         </div>
       </a>
 
-      <button
-        type="button"
-        onClick={() => setShowDeleteModal(true)}
-        aria-label={`${link.title} 링크 삭제`}
-        className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--card)] text-[var(--text-sub)] opacity-0 shadow-[0_1px_4px_rgba(0,0,0,0.12)] transition group-hover:opacity-100 hover:bg-[var(--background)] hover:text-[var(--error)]"
-      >
-        <TrashIcon className="h-4 w-4" />
-      </button>
+      <div className="absolute top-3 right-3 flex items-center gap-1.5 opacity-0 transition group-hover:opacity-100">
+        <button
+          type="button"
+          onClick={() => setShowEditModal(true)}
+          aria-label={`${link.title} 링크 수정`}
+          className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--card)] text-[var(--text-sub)] shadow-[0_1px_4px_rgba(0,0,0,0.12)] transition hover:bg-[var(--background)] hover:text-[var(--accent)]"
+        >
+          <PencilIcon className="h-4 w-4" />
+        </button>
+        <button
+          type="button"
+          onClick={() => setShowDeleteModal(true)}
+          aria-label={`${link.title} 링크 삭제`}
+          className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--card)] text-[var(--text-sub)] shadow-[0_1px_4px_rgba(0,0,0,0.12)] transition hover:bg-[var(--background)] hover:text-[var(--error)]"
+        >
+          <TrashIcon className="h-4 w-4" />
+        </button>
+      </div>
+
+      {showEditModal && <EditLinkModal link={link} onClose={() => setShowEditModal(false)} />}
 
       {showDeleteModal && (
         <DeleteLinkModal

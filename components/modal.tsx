@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 type ModalProps = {
@@ -9,6 +9,8 @@ type ModalProps = {
 };
 
 export function Modal({ onClose, children }: ModalProps) {
+  const mouseDownOnOverlay = useRef(false);
+
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") onClose();
@@ -20,7 +22,15 @@ export function Modal({ onClose, children }: ModalProps) {
   return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
-      onClick={onClose}
+      onMouseDown={(event) => {
+        mouseDownOnOverlay.current = event.target === event.currentTarget;
+      }}
+      onClick={(event) => {
+        if (mouseDownOnOverlay.current && event.target === event.currentTarget) {
+          onClose();
+        }
+        mouseDownOnOverlay.current = false;
+      }}
     >
       <div className="w-full max-w-sm" onClick={(event) => event.stopPropagation()}>
         {children}
