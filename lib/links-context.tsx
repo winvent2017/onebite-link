@@ -1,8 +1,16 @@
 "use client";
 
-import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
+import { createClient } from "@/utils/supabase/client";
 import type { LinkItem } from "./types";
-import { links as initialLinks } from "./mock-data";
 
 type NewLinkInput = {
   url: string;
@@ -20,28 +28,81 @@ type UpdateLinkInput = {
 
 type LinksContextValue = {
   links: LinkItem[];
-  addLink: (input: NewLinkInput) => LinkItem;
+  isAddingLink: boolean;
+  addLink: (input: NewLinkInput) => Promise<LinkItem | null>;
   updateLink: (id: string, input: UpdateLinkInput) => void;
   deleteLink: (id: string) => void;
 };
 
 const LinksContext = createContext<LinksContextValue | null>(null);
 
-export function LinksProvider({ children }: { children: ReactNode }) {
-  const [links, setLinks] = useState<LinkItem[]>(initialLinks);
+type LinkRow = {
+  id: number;
+  url: string;
+  title: string | null;
+  description: string | null;
+  thumbnail_url: string | null;
+  folder_id: number | null;
+  created_at: string;
+};
 
-  function addLink(input: NewLinkInput) {
-    const link: LinkItem = {
-      id: crypto.randomUUID(),
-      title: input.title,
-      url: input.url,
-      description: input.description,
-      thumbnail: input.thumbnail,
-      folderId: input.folderId,
-      createdAt: new Date().toISOString().slice(0, 10),
-    };
-    setLinks((prev) => [link, ...prev]);
-    return link;
+function toLinkItem(row: LinkRow): LinkItem {
+  return {
+    id: String(row.id),
+    url: row.url,
+    title: row.title ?? "",
+    description: row.description ?? "",
+    thumbnail: row.thumbnail_url ?? "",
+    folderId: row.folder_id !== null ? String(row.folder_id) : "",
+    createdAt: row.created_at.slice(0, 10),
+  };
+}
+
+export function LinksProvider({ children }: { children: ReactNode }) {
+  const [links, setLinks] = useState<LinkItem[]>([]);
+  const [isAddingLink, setIsAddingLink] = useState(false);
+  const isAddingRef = useRef(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase
+      .from("links")
+      .select("id, url, title, description, thumbnail_url, folder_id, created_at")
+      .order("id", { ascending: false })
+      .then(({ data }) => {
+        if (!data) return;
+        setLinks(data.map(toLinkItem));
+      });
+  }, []);
+
+  async function addLink(input: NewLinkInput) {
+    if (isAddingRef.current) return null;
+    isAddingRef.current = true;
+    setIsAddingLink(true);
+
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from("links")
+        .insert({
+          url: input.url,
+          title: input.title,
+          description: input.description,
+          thumbnail_url: input.thumbnail,
+          folder_id: input.folderId ? Number(input.folderId) : null,
+        })
+        .select("id, url, title, description, thumbnail_url, folder_id, created_at")
+        .single();
+
+      if (error || !data) return null;
+
+      const link = toLinkItem(data);
+      setLinks((prev) => [link, ...prev]);
+      return link;
+    } finally {
+      isAddingRef.current = false;
+      setIsAddingLink(false);
+    }
   }
 
   function updateLink(id: string, input: UpdateLinkInput) {
@@ -54,7 +115,10 @@ export function LinksProvider({ children }: { children: ReactNode }) {
     setLinks((prev) => prev.filter((link) => link.id !== id));
   }
 
-  const value = useMemo(() => ({ links, addLink, updateLink, deleteLink }), [links]);
+  const value = useMemo(
+    () => ({ links, isAddingLink, addLink, updateLink, deleteLink }),
+    [links, isAddingLink],
+  );
 
   return <LinksContext.Provider value={value}>{children}</LinksContext.Provider>;
 }
