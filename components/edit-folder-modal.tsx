@@ -20,11 +20,11 @@ export function EditFolderModal({ folderId, initialName, onClose }: EditFolderMo
     inputRef.current?.select();
   }, []);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const trimmed = name.trim();
     if (!trimmed) return;
-    renameFolder(folderId, trimmed);
+    await renameFolder(folderId, trimmed);
     onClose();
   }
 
