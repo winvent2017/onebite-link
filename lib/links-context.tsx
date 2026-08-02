@@ -30,7 +30,7 @@ type LinksContextValue = {
   links: LinkItem[];
   isAddingLink: boolean;
   addLink: (input: NewLinkInput) => Promise<LinkItem | null>;
-  updateLink: (id: string, input: UpdateLinkInput) => void;
+  updateLink: (id: string, input: UpdateLinkInput) => Promise<void>;
   deleteLink: (id: string) => void;
 };
 
@@ -105,10 +105,23 @@ export function LinksProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  function updateLink(id: string, input: UpdateLinkInput) {
-    setLinks((prev) =>
-      prev.map((link) => (link.id === id ? { ...link, ...input } : link)),
-    );
+  async function updateLink(id: string, input: UpdateLinkInput) {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from("links")
+      .update({
+        title: input.title,
+        description: input.description,
+        folder_id: input.folderId ? Number(input.folderId) : null,
+      })
+      .eq("id", id)
+      .select("id, url, title, description, thumbnail_url, folder_id, created_at")
+      .single();
+
+    if (error || !data) return;
+
+    const link = toLinkItem(data);
+    setLinks((prev) => prev.map((item) => (item.id === id ? link : item)));
   }
 
   function deleteLink(id: string) {

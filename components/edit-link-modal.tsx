@@ -25,11 +25,11 @@ export function EditLinkModal({ link, onClose }: EditLinkModalProps) {
     titleRef.current?.select();
   }, []);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const trimmedTitle = title.trim();
     if (!trimmedTitle) return;
-    updateLink(link.id, { title: trimmedTitle, description: description.trim(), folderId });
+    await updateLink(link.id, { title: trimmedTitle, description: description.trim(), folderId });
     onClose();
   }
 
