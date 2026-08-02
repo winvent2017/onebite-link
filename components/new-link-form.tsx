@@ -9,7 +9,7 @@ import { ChevronDownIcon } from "./icons";
 export function NewLinkForm() {
   const router = useRouter();
   const { folders } = useFolders();
-  const { addLink } = useLinks();
+  const { addLink, isAddingLink } = useLinks();
   const [url, setUrl] = useState("");
   const [folderId, setFolderId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -18,7 +18,7 @@ export function NewLinkForm() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const trimmedUrl = url.trim();
-    if (!trimmedUrl || isLoading) return;
+    if (!trimmedUrl || isLoading || isAddingLink) return;
 
     setIsLoading(true);
     setError("");
@@ -31,13 +31,17 @@ export function NewLinkForm() {
         throw new Error(data.error ?? "오픈 그래프 정보를 가져오지 못했습니다.");
       }
 
-      addLink({
+      const link = await addLink({
         url: data.url,
         title: data.title,
         description: data.description,
         thumbnail: data.thumbnail,
         folderId,
       });
+
+      if (!link) {
+        throw new Error("링크를 저장하지 못했습니다.");
+      }
 
       router.push(folderId ? `/folder/${folderId}` : "/");
     } catch {
