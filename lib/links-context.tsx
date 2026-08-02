@@ -31,7 +31,7 @@ type LinksContextValue = {
   isAddingLink: boolean;
   addLink: (input: NewLinkInput) => Promise<LinkItem | null>;
   updateLink: (id: string, input: UpdateLinkInput) => Promise<void>;
-  deleteLink: (id: string) => void;
+  deleteLink: (id: string) => Promise<void>;
 };
 
 const LinksContext = createContext<LinksContextValue | null>(null);
@@ -124,7 +124,12 @@ export function LinksProvider({ children }: { children: ReactNode }) {
     setLinks((prev) => prev.map((item) => (item.id === id ? link : item)));
   }
 
-  function deleteLink(id: string) {
+  async function deleteLink(id: string) {
+    const supabase = createClient();
+    const { error } = await supabase.from("links").delete().eq("id", id);
+
+    if (error) return;
+
     setLinks((prev) => prev.filter((link) => link.id !== id));
   }
 

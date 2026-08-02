@@ -12,8 +12,8 @@ type DeleteLinkModalProps = {
 export function DeleteLinkModal({ linkId, linkTitle, onClose }: DeleteLinkModalProps) {
   const { deleteLink } = useLinks();
 
-  function handleConfirm() {
-    deleteLink(linkId);
+  async function handleConfirm() {
+    await deleteLink(linkId);
     onClose();
   }
 
