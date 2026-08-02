@@ -9,7 +9,7 @@ type NewFolderModalProps = {
 };
 
 export function NewFolderModal({ onClose }: NewFolderModalProps) {
-  const { addFolder } = useFolders();
+  const { addFolder, isAddingFolder } = useFolders();
   const [name, setName] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -17,12 +17,13 @@ export function NewFolderModal({ onClose }: NewFolderModalProps) {
     inputRef.current?.focus();
   }, []);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (isAddingFolder) return;
     const trimmed = name.trim();
     if (!trimmed) return;
-    addFolder(trimmed);
-    onClose();
+    const folder = await addFolder(trimmed);
+    if (folder) onClose();
   }
 
   return (
@@ -57,9 +58,9 @@ export function NewFolderModal({ onClose }: NewFolderModalProps) {
           </button>
           <button
             type="submit"
-            disabled={!name.trim()}
+            disabled={!name.trim() || isAddingFolder}
             className={`rounded-xl px-4 py-2.5 text-sm font-bold transition active:scale-[0.98] ${
-              name.trim()
+              name.trim() && !isAddingFolder
                 ? "bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)]"
                 : "cursor-not-allowed bg-[var(--disabled-bg)] text-[var(--disabled-text)] active:scale-100"
             }`}
